@@ -94,12 +94,11 @@ BEGIN
     RAISE NOTICE 'Execution time: % seconds', exec_time;
 END $$;
 
+/*
 
-
--- NOTICE:  Execution time: 0.319228 seconds
---DO
-
---Query returned successfully in 374 msec.
+Execution time: 0.319228 seconds
+Query returned successfully in 374 msec.
+*/
 
 
 
@@ -133,11 +132,10 @@ BEGIN
     RAISE NOTICE 'Execution time: % seconds', exec_time;
 END $$;
 
-
--- NOTICE:  Execution time: 0.278903 seconds
--- DO
-
--- Query returned successfully in 317 msec.
+/*
+Execution time: 0.278903 seconds
+Query returned successfully in 317 msec.
+*/
 
 CREATE MATERIALIZED VIEW orders_summary AS
 SELECT 
@@ -176,10 +174,10 @@ BEGIN
     RAISE NOTICE 'Execution time: % seconds', exec_time;
 END $$;
 
--- NOTICE:  Execution time: 0.002872 seconds
--- DO
-
--- Query returned successfully in 123 msec.
+/*
+Execution time: 0.002872 seconds
+Query returned successfully in 123 msec.
+*/
 
 
 
