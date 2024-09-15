@@ -10,13 +10,12 @@ Query returned successfully in 374 msec.
 CREATE INDEX idx_orders_product ON fact.Orders(product_id);
 CREATE INDEX idx_products_product ON dim.Products(product_id);
 CREATE INDEX idx_products_category ON dim.Products(category);
-CREATE INDEX idx_orders_total_amount ON fact.Orders(total_amount);
 
 /*
 2. Performance after creating indexes
 
-Execution time: 0.278903 seconds
-Query returned successfully in 317 msec.
+Execution time: 0.218304 seconds
+Query returned successfully in 256 msec.
 */
 
 CREATE MATERIALIZED VIEW orders_summary AS
@@ -41,8 +40,8 @@ FROM
 /*
 3. Performance after creating a materialized view
 
-NOTICE:  Execution time: 0.002872 seconds
-Query returned successfully in 123 msec.
+Execution time: 0.000114 seconds
+Query returned successfully in 73 msec
 */
 
 
