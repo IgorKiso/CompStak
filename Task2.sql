@@ -26,8 +26,8 @@ CREATE TABLE fact.orders (
     product_id INT NOT NULL,
     quantity INT NOT NULL,
     total_amount DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (customer_id) REFERENCES dim.Customers(customer_id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES dim.Products(product_id) ON DELETE CASCADE
+    FOREIGN KEY (customer_id) REFERENCES dim.Customers(customer_id),
+    FOREIGN KEY (product_id) REFERENCES dim.Products(product_id),
 );
 
 INSERT INTO dim.products (product_name, category)

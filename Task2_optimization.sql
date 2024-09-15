@@ -38,11 +38,8 @@ FROM
     orders_summary;
 
 /*
-3. Performance after creating a materialized view
+3. Performance after creating a materialized view 
 
 Execution time: 0.000114 seconds
 Query returned successfully in 73 msec
 */
-
-
-
