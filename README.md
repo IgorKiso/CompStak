@@ -106,7 +106,7 @@ These optimizations reduced query execution time from **0.319 seconds** to **0.0
 First, I created the compstak_task3 database using pgAdmin 4. 
 Before creating the ER diagram, I set up the necessary predefined ENUM data types. 
 I then designed the ER diagram, defining the required dimension and fact tables along with their attributes, aiming to accurately represent the real-world scenario. 
-After that, I used Visual Studio Code to create the tables, views, cubes, indexes.
+After that, I used Visual Studio Code to create the tables, views, cube, indexes.
 
 **Instructions for Running the Code:**
 
@@ -116,6 +116,31 @@ Run the code from the Task3.sql file.
 **Additional Explanations:**
 
 To save you from manually creating types, I included code to create ENUM predefined data types. 
+I opted for an OLAP cube. There were other solutions as well, such as creating a materialized view like:
+
+    CREATE MATERIALIZED VIEW sales_summary_mv AS
+    SELECT
+        s.store_name AS store,
+        p.name AS product_name,
+        r.region AS region,
+        EXTRACT(YEAR FROM t.order_time) AS year,
+        EXTRACT(MONTH FROM t.order_time) AS month,
+        SUM(t.quantity) AS quantity_sold,
+        SUM(t.total_amount) AS total_sales,
+        COUNT(DISTINCT t.order_id) AS total_orders,
+        SUM(t.discount_amount) AS discount_applied
+    FROM fact.transactions t
+    JOIN dim.stores s ON t.store_id = s.store_id
+    JOIN dim.products p ON t.product_sku = p.product_sku
+    JOIN dim.regions r ON s.region_id = r.region_id
+    GROUP BY 
+        store, 
+        product_name, 
+        region, 
+        year, 
+        month;
+
+Additionally, I did not create all the necessary indexes or the logic to check if an order is completed due to time constraints from family obligations. All of these are easily implementable.
 
 **Design Overview:**
 
