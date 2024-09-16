@@ -1,4 +1,4 @@
-##BI Engineer Technical Assessment##
+#BI Engineer Technical Assessment#
 
 **Task 1: Data Modeling**
 
