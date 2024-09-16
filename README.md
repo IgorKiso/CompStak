@@ -1,6 +1,6 @@
-##BI Engineer Technical Assessment
+###BI Engineer Technical Assessment
 
-Task 1: Data Modeling
+**Task 1: Data Modeling**
 
 Tools I Used:
 
