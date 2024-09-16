@@ -1,5 +1,3 @@
--- refer to Task2_performance_test.sql
-
 /*
 1. Non-optimized query
 
