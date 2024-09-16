@@ -31,3 +31,5 @@ The fact table records transactional data. Each row represents a unique line ite
 The product table stores product-related data, enabling detailed product-level analysis such as tracking sales performance, analyzing inventory levels, and identifying trends in different product categories. The customer table allows analysis of customer purchasing behavior, segmentation by type, and tracking marketing preferences like email or phone opt-ins. The promotions table helps analyze the effectiveness of promotions by tracking usage and their impact on total sales.
 
 The star schema is straightforward and user-friendly for querying. Each dimension links directly to the fact table, simplifying queries with JOIN operations. The fact table contains numerical data for analysis, while dimension tables hold descriptive attributes. This structure allows for efficient data aggregation and slicing across various dimensions. The star schema is highly efficient for OLAP queries, essential for reporting and business intelligence, and speeds up aggregations, summaries, and drill-down queries for high-performance analytics.
+
+
