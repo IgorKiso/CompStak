@@ -19,11 +19,11 @@ After that, I used Visual Studio Code to create the tables with DDL commands.
 **Instructions for Running the Code:**
 
 Create the compstak_task1 database.
-Run the code from the Test1.sql file.
+Run the code from the Task1.sql file.
 
 **Additional Explanations:**
 
-To avoid manually creating types, I included code to create ENUM predefined data types. 
+To save you from manually creating types, I included code to create ENUM predefined data types. 
 Some attributes in the model have constraints based on the assumption that a customer must register using an email, first name, and last name. 
 Additionally, a customer might register without making a purchase, which is why some attributes have default null values. 
 Attributes related to cookies could be associated with either the customer or transaction tables.
@@ -90,3 +90,47 @@ Run the remaining code to create the materialized view and index on it to achiev
 - Materialized View: Speeds up query performance by storing precomputed results, thus avoiding the overhead of recalculating aggregations and joins each time.
 
 These optimizations reduced query execution time from **0.319 seconds** to **0.0001 seconds**, showcasing a significant performance improvement.
+
+## Task 3: Complex Data Modeling for a Multi-Store Retail Chain
+
+**Tools I Used:**
+
+- PostgreSQL
+- pgAdmin 4
+- Visual Studio Code
+- ERD For Database Tool (within pgAdmin 4)
+- cube extension
+
+**Workflow Description:**
+
+First, I created the compstak_task3 database using pgAdmin 4. 
+Before creating the ER diagram, I set up the necessary predefined ENUM data types. 
+I then designed the ER diagram, defining the required dimension and fact tables along with their attributes, aiming to accurately represent the real-world scenario. 
+After that, I used Visual Studio Code to create the tables, views, cubes, indexes.
+
+**Instructions for Running the Code:**
+
+Create the compstak_task3 database.
+Run the code from the Task3.sql file.
+
+**Additional Explanations:**
+
+To save you from manually creating types, I included code to create ENUM predefined data types. 
+Some attributes in the model have constraints based on the assumption that a customer must register using an email, first name, and last name. 
+Additionally, a customer might register without making a purchase, which is why some attributes have default null values. 
+Attributes related to cookies could be associated with either the customer or transaction tables.
+I used for the latter approach.
+
+**Design Overview:**
+
+I designed this schema using a star schema structure, which is ideal for reporting and analytics in a data warehouse setting. 
+The star schema consists of a central fact table surrounded by several dimension tables.
+The fact table records transactional data. Each row represents a unique line item in a sales order, allowing tracking of purchases, refunds, promotional usage and more. 
+The fact table stores important measures (e.g., quantity, total_amount, discount_amount), essential for analytical queries.
+It references dimension tables through foreign keys, making it easy to analyze data from various perspectives. 
+The product table stores product-related data, enabling detailed product-level analysis such as tracking sales performance, analyzing inventory levels, and identifying trends in different product categories. 
+The customer table allows analysis of customer purchasing behavior, segmentation by type, and tracking marketing preferences like email or phone opt-ins. 
+The promotions table helps analyze the effectiveness of promotions by tracking usage and their impact on total sales.
+The star schema is straightforward and user-friendly for querying. 
+This structure allows for efficient data aggregation and slicing across various dimensions. 
+The star schema is highly efficient for OLAP queries, essential for reporting and business intelligence, and speeds up aggregations, summaries, and drill-down queries for high-performance analytics.

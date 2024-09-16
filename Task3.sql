@@ -34,12 +34,7 @@ CREATE TYPE customer_category AS ENUM
         'High Value', 'Medium Value', 'Low Value', 
         'Urban', 'Suburban', 'Rural','Other'
         );
-CREATE TYPE region_type AS ENUM (
-    'Northeast',
-    'Midwest',
-    'South',
-    'West'
-);
+
 CREATE TYPE store_types AS ENUM (
     'Physical',
     'Online'
@@ -50,12 +45,12 @@ CREATE TABLE dim.products (
     created_date TIMESTAMP DEFAULT NOW(),
     closed_date TIMESTAMP DEFAULT NULL,
     changed_date TIMESTAMP DEFAULT NULL,
-    updated_date TIMESTAMP DEFAULT NULL(),
+    updated_date TIMESTAMP DEFAULT NULL,
     name VARCHAR(25) NOT NULL,
-    cost DECIMAL(8, 2) CHECK(cost > 0),
-    price DECIMAL(8, 2) CHECK(price > 0),
+    cost DECIMAL(8, 2) CHECK (cost > 0),
+    price DECIMAL(8, 2) CHECK (price > 0),
     status product_status NOT NULL,
-    inventory_quantity INT CHECK(inventory_quantity >= 0),
+    inventory_quantity INT CHECK (inventory_quantity >= 0),
     category product_category NOT NULL,
     brand VARCHAR(25) NOT NULL,
     size VARCHAR(10) NOT NULL,
@@ -92,12 +87,14 @@ CREATE TABLE dim.customers (
     shipping_country VARCHAR(30),
     shipping_continent VARCHAR(15)
 );
+
 CREATE TABLE dim.regions (
     region_id SERIAL PRIMARY KEY,
-    region region_type NOT NULL,
+    region varchar(20) NOT NULL,
     created_date TIMESTAMP DEFAULT NOW(),
     updated_date TIMESTAMP DEFAULT NOW()
 );
+
 CREATE TABLE dim.stores (
     store_id SERIAL PRIMARY KEY,
     store_name VARCHAR(50) NOT NULL,
@@ -115,6 +112,7 @@ CREATE TABLE dim.stores (
     updated_date TIMESTAMP DEFAULT NOW(),
     region_id INT REFERENCES dim.regions(region_id)
 );
+
 CREATE TABLE fact.transactions (
     order_id INT NOT NULL,
     order_line INT NOT NULL,
@@ -140,3 +138,67 @@ CREATE TABLE fact.transactions (
     store_id INT REFERENCES dim.stores(store_id),
     PRIMARY KEY (order_id,order_line)
 );
+
+CREATE INDEX idx_transactions_product_sku ON fact.transactions(product_sku);
+CREATE INDEX idx_transactions_customer_id ON fact.transactions(customer_id);
+CREATE INDEX idx_transactions_store_id ON fact.transactions(store_id);
+CREATE INDEX idx_transactions_order_time ON fact.transactions(order_time);
+
+CREATE EXTENSION IF NOT EXISTS cube
+    WITH SCHEMA public;
+
+CREATE TABLE sales_cube_data (
+    dimensions cube,
+    quantity_sold INT,
+    total_sales DECIMAL(10, 2),
+    total_orders INT,
+    discount_applied DECIMAL(10, 2),
+    total_customers INT,
+    total_spent DECIMAL(10, 2),
+    quantity_bought INT,
+    inventory_volume INT
+);
+
+CREATE OR REPLACE FUNCTION text_to_numeric_array(text[]) RETURNS float8[] AS $$
+DECLARE
+    result float8[];
+    i int;
+BEGIN
+    result := '{}';
+    FOR i IN array_lower($1, 1)..array_upper($1, 1) LOOP
+        result := array_append(result, length($1[i])::float8);
+    END LOOP;
+    RETURN result;
+END;
+$$ LANGUAGE plpgsql;
+
+INSERT INTO sales_cube_data (
+    dimensions, quantity_sold, total_sales,
+    total_orders, discount_applied, 
+    total_customers, total_spent, 
+    quantity_bought, inventory_volume)
+SELECT
+    cube(text_to_numeric_array(ARRAY[
+        s.store_name::text,
+        p.name::text,
+        r.region::text,
+        c.customer_id::text,
+        EXTRACT(YEAR FROM t.order_time)::text,
+        EXTRACT(MONTH FROM t.order_time)::text
+    ])) AS dimensions,
+    SUM(t.quantity) AS quantity_sold,
+    SUM(t.total_amount) AS total_sales,
+    COUNT(DISTINCT t.order_id) AS total_orders,
+    SUM(t.discount_amount) AS discount_applied,
+    COUNT(c.customer_id) AS total_customers,
+    SUM(t.total_amount) AS total_spent,
+    SUM(t.quantity) AS quantity_bought,
+    SUM(p.inventory_quantity) AS inventory_volume
+FROM fact.transactions t
+JOIN dim.stores s ON t.store_id = s.store_id
+JOIN dim.products p ON t.product_sku = p.product_sku
+JOIN dim.customers c ON t.customer_id = c.customer_id
+JOIN dim.regions r ON s.region_id = r.region_id
+GROUP BY 
+    s.store_name, p.name, r.region, c.customer_id, 
+    EXTRACT(YEAR FROM t.order_time), EXTRACT(MONTH FROM t.order_time);

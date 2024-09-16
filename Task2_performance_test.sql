@@ -41,7 +41,7 @@ SELECT
         WHEN i % 5 = 0 THEN 'Serbia'
         WHEN i % 5 = 1 THEN 'USA'
         WHEN i % 5 = 2 THEN 'UK'
-        WHEN i % 5 = 3 THEN 'Japan'
+        WHEN i % 5 = 3 THEN 'Mexico'
         ELSE 'Spain'
     END AS country
 FROM generate_series(1, 100000) AS i;
@@ -49,8 +49,8 @@ FROM generate_series(1, 100000) AS i;
 INSERT INTO fact.orders (order_date, customer_id, product_id, quantity, total_amount)
 SELECT
     NOW() - (i * interval '1 minute') AS order_date,
-    (i % 100000) + 1 AS customer_id,  -- 100000 kupaca
-    (i % 20000) + 1 AS product_id,    -- 20000 proizvoda
+    (i % 100000) + 1 AS customer_id,
+    (i % 20000) + 1 AS product_id,
     (i % 10 + 1) AS quantity,
     (i % 1000 + 100) * (i % 10 + 1) AS total_amount
 FROM generate_series(1, 1000000) AS i;

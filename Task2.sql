@@ -1,5 +1,5 @@
 /*
-1. Non-optimized query
+Non-optimized query
 
 Execution time: 0.319228 seconds
 Query returned successfully in 374 msec.
@@ -10,7 +10,7 @@ CREATE INDEX idx_products_product ON dim.Products(product_id);
 CREATE INDEX idx_products_category ON dim.Products(category);
 
 /*
-2. Performance after creating indexes
+Performance after creating indexes
 
 Execution time: 0.218304 seconds
 Query returned successfully in 256 msec.
@@ -36,7 +36,7 @@ FROM
     orders_summary;
 
 /*
-3. Performance after creating a materialized view 
+Performance after creating a materialized view 
 
 Execution time: 0.000114 seconds
 Query returned successfully in 73 msec

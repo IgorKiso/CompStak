@@ -26,6 +26,13 @@ CREATE TYPE delivery_status_type AS ENUM
     (
         'delivered', 'pending', 'returned'
         );
+CREATE TYPE customer_category AS ENUM 
+    (
+        'Individual', 'Business', 'Frequent Buyer', 
+        'Occasional Buyer', 'Rare Buyer', 
+        'High Value', 'Medium Value', 'Low Value', 
+        'Urban', 'Suburban', 'Rural','Other'
+        );
 
 CREATE TABLE dim.products (
     product_sku VARCHAR(16) PRIMARY KEY,
@@ -44,14 +51,6 @@ CREATE TABLE dim.products (
     color VARCHAR(20) NOT NULL,
     sex sex_type NOT NULL
 );
-
-CREATE TYPE customer_category AS ENUM 
-    (
-        'Individual', 'Business', 'Frequent Buyer', 
-        'Occasional Buyer', 'Rare Buyer', 
-        'High Value', 'Medium Value', 'Low Value', 
-        'Urban', 'Suburban', 'Rural','Other'
-        );
 
 CREATE TABLE dim.customers (
     customer_id SERIAL PRIMARY KEY,
@@ -123,3 +122,25 @@ CREATE TABLE fact.transactions (
     promotion_id INT REFERENCES dim.promotions(promotion_id),
     PRIMARY KEY (order_id,order_line)
 );
+
+CREATE INDEX idx_products_sku ON dim.products(product_sku);
+CREATE INDEX idx_products_category ON dim.products(category);
+CREATE INDEX idx_products_brand ON dim.products(brand);
+CREATE INDEX idx_products_created_date ON dim.products(created_date);
+CREATE INDEX idx_products_sex ON dim.products(sex);
+
+CREATE INDEX idx_customers_id ON dim.customers(customer_id);
+CREATE INDEX idx_customers_email ON dim.customers(email);
+CREATE INDEX idx_customers_created_time ON dim.customers(created_time);
+CREATE INDEX idx_customers_country ON dim.customers(country);
+
+CREATE INDEX idx_promotions_id ON dim.promotions(promotion_id);
+CREATE INDEX idx_promotions_promotion_code ON dim.promotions(promotion_code);
+CREATE INDEX idx_promotions_start_date ON dim.promotions(start_date);
+
+CREATE INDEX idx_transactions_product_sku ON fact.transactions(product_sku);
+CREATE INDEX idx_transactions_customer_id ON fact.transactions(customer_id);
+CREATE INDEX idx_transactions_promotion_id ON fact.transactions(promotion_id);
+CREATE INDEX idx_transactions_order_time ON fact.transactions(order_time);
+CREATE INDEX idx_transactions_payment_status ON fact.transactions(payment_status);
+CREATE INDEX idx_transactions_delivery_status ON fact.transactions(delivery_status);
