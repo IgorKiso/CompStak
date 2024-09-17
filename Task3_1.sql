@@ -153,7 +153,7 @@ CREATE TABLE sales_cube(
     quantity_sold INT,
     total_sales DECIMAL(10, 2),
     total_orders INT,
-    discount_applied DECIMAL(10, 2),
+    discount_applied DECIMAL(10, 2)
     );
 
 INSERT INTO sales_cube (
@@ -186,11 +186,10 @@ CREATE TABLE customers_cube(
     month INT,
     total_customers INT,
     total_spent DECIMAL(10, 2),
-    quantity_bought INT,
-    inventory_volume INT
-);
+    quantity_bought INT
+    );
 
-INSERT INTO customer_cube (
+INSERT INTO customers_cube (
     store_name, product_name, customer_id, year, month, 
     total_customers, total_spent, quantity_bought
 )
@@ -202,7 +201,7 @@ SELECT
     EXTRACT(MONTH FROM t.order_time),
     COUNT(c.customer_id),
     SUM(t.total_amount),
-    SUM(t.quantity),
+    SUM(t.quantity)
 FROM fact.transactions t
 JOIN dim.stores s ON t.store_id = s.store_id
 JOIN dim.products p ON t.product_sku = p.product_sku
