@@ -142,6 +142,56 @@ I opted for an OLAP cube. There were other solutions as well, such as creating a
         year, 
         month;
 
+Instead of using the text_to_numeric_array function, I could store the actual textual values of the dimensions. For example, I could modify the table design to store each dimension as a separate column:
+
+CREATE TABLE sales_cube_data (
+    store_name VARCHAR(50),
+    product_name VARCHAR(50),
+    region VARCHAR(50),
+    customer_id INT,
+    year INT,
+    month INT,
+    quantity_sold INT,
+    total_sales DECIMAL(10, 2),
+    total_orders INT,
+    discount_applied DECIMAL(10, 2),
+    total_customers INT,
+    total_spent DECIMAL(10, 2),
+    quantity_bought INT,
+    inventory_volume INT
+);
+Then, I could insert data with the actual textual values:
+
+INSERT INTO sales_cube_data (
+    store_name, product_name, region, customer_id, year, month, 
+    quantity_sold, total_sales, total_orders, discount_applied, 
+    total_customers, total_spent, quantity_bought, inventory_volume
+)
+SELECT
+    s.store_name,
+    p.name,
+    r.region,
+    c.customer_id,
+    EXTRACT(YEAR FROM t.order_time),
+    EXTRACT(MONTH FROM t.order_time),
+    SUM(t.quantity),
+    SUM(t.total_amount),
+    COUNT(DISTINCT t.order_id),
+    SUM(t.discount_amount),
+    COUNT(c.customer_id),
+    SUM(t.total_amount),
+    SUM(t.quantity),
+    SUM(p.inventory_quantity)
+FROM fact.transactions t
+JOIN dim.stores s ON t.store_id = s.store_id
+JOIN dim.products p ON t.product_sku = p.product_sku
+JOIN dim.customers c ON t.customer_id = c.customer_id
+JOIN dim.regions r ON s.region_id = r.region_id
+GROUP BY 
+    s.store_name, p.name, r.region, c.customer_id, 
+    EXTRACT(YEAR FROM t.order_time), EXTRACT(MONTH FROM t.order_time);
+
+
 Additionally, I did not create all the necessary indexes or the logic to check if an order is completed due to time constraints from family obligations. All of these are easily implementable.
 
 **Design Overview:**
