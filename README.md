@@ -56,7 +56,7 @@ The star schema is highly efficient for OLAP queries, essential for reporting an
 
 I used EXPLAIN ANALYZE to identify performance bottlenecks and full table scans in the query. 
 To improve performance, I created indexes on the relevant columns and implemented a materialized view. 
-The task did not specify data modeling, which could have further optimized performance through denormalization. 
+The task did not specify data modeling, which could have further optimized performance through denormalization, partitionig... 
 Therefore, I focused on indexing and materialized views.
 Additionally, I created and populated the database with test data to evaluate performance. 
 I used a PL/pgSQL block to compare the performance of the original query, the query after creating indexes, and the query after implementing the materialized view and its index.
@@ -116,6 +116,8 @@ Run the code from the Task3.sql file.
 **Additional Explanations:**
 
 To save you from manually creating types, I included code to create ENUM predefined data types. 
+While PostgreSQL doesn’t offer a native OLAP engine, you can simulate OLAP functionality through: 
+SQL features like CUBE, ROLLUP, and GROUPING SETS for multidimensional queries, materialized views for precomputed aggregations or extensions for multidimensional data (e.g.cube extension).
 I opted for an OLAP cube. There were other solutions as well, such as creating a materialized view like:
 
     CREATE MATERIALIZED VIEW sales_summary_mv AS
@@ -163,3 +165,4 @@ I populated the cube with aggregated data by joining the fact table with the dim
 By aggregating the data into the cube, I obtained a comprehensive summary of sales performance across different dimensions. This included insights into sales trends at the store level, regional performance, customer purchasing behavior, and inventory levels.
 The cube allows for efficient querying and analysis of sales data, providing valuable insights into product performance, customer engagement, and store operations.
 This implementation facilitates detailed and flexible analysis, supporting the company's need to track individual sales, analyze sales trends, monitor customer behavior, and manage inventory across multiple stores.
+Additionally, the model can easily be integrated into any reporting tool.
