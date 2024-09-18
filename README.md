@@ -107,7 +107,7 @@ First, I created the compstak_task3 database using pgAdmin 4.
 Before creating the ER diagram, I set up the necessary predefined ENUM data types. 
 I then designed the ER diagram, defining the required dimension and fact tables along with their attributes, aiming to accurately represent the real-world scenario. 
 After that, I used Visual Studio Code to create the tables, views, cube, indexes.
-**I created two solutions: one using the cube extension and another simulating an OLAP cube using physical tables with dimensions and measures.**
+**I created three solutions: one using the cube extension, another simulating an OLAP cube using physical tables with dimensions and measures, and the third using materialized views.**
 
 **Instructions for Running the Code:**
 
